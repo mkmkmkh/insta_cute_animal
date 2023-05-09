@@ -132,61 +132,58 @@ time.sleep(input_wait_time)
 pyautogui.click(x=1850, y=786)
 time.sleep(input_wait_time)
 
-#%% 사진 20개 만들기~
-#generate 클릭.
-for i in range(5):
-    pyautogui.click(x=200, y=1000)
-    time.sleep(im_wait_time*2)
-    pyautogui.press('esc')
-    time.sleep(input_wait_time)
 
+##################################################### 생산반복################################################
+#%%
 #%%
 
-images = driver.find_elements(
-    by=By.CSS_SELECTOR, value='img.rounded-md.object-contain')
-img_url = []
-time.sleep(0.5)
-driver.implicitly_wait(im_wait_time)
-# img_url = images.__getattribute__('src')
+for p in range(120):
+        pyautogui.click(x=200, y=1000)
+        time.sleep(im_wait_time*2)
+        pyautogui.press('esc')
+        time.sleep(input_wait_time)
 
-for image in images:
-    url = image.get_attribute('src')
-    img_url.append(url)
-    
-time.sleep(0.5)
-driver.implicitly_wait(im_wait_time)
-folder_path = 'cat_image'
-
-for i in range(len(img_url)):
-    file_path = os.path.join(folder_path, f'cat_{i}.jpg')  # cat_image 폴더 안에 파일 경로 지정
-    urllib.request.urlretrieve(img_url[i], file_path)
-    time.sleep(0.5)
-
-
-#%%
-
-
+####dog가 현재 돌아가는 하루용 프로그램이고 이거 수정해서 한번에 한달분량 사진을 쭉 뽑아놓을 수 있어.
 folder_path = 'cat_image'
 
 # 이번달 폴더의 경로 가져오기
 now = time.localtime()
-this_month_folder_name = time.strftime('%m', now)
-this_month_folder_path = os.path.join(folder_path, this_month_folder_name)
+this_month_folder_name = ''
+# this_month_folder_path = os.path.join(folder_path, this_month_folder_name)
 
 # 이번달 - 1 폴더부터 이번달 - 31 폴더까지 생성하고 이미지 다운로드
 for i in range(1, 32):
+    
+    #사진 20개 만들기~
+    # generate 클릭.
+    
+    
+    images = driver.find_elements(
+        by=By.CSS_SELECTOR, value='img.rounded-md.object-contain')
+    img_url = []
+    time.sleep(0.5)
+    driver.implicitly_wait(im_wait_time)
+    # img_url = images.__getattribute__('src')
+
+    for image in images:
+        url = image.get_attribute('src')
+        img_url.append(url)
+        
+    time.sleep(0.5)
+    driver.implicitly_wait(im_wait_time)
+    
     # 이번달 - i 폴더 생성
-    this_month_day_folder_name = time.strftime('%d', time.localtime(time.mktime(now) - 86400 * i))
+    this_month_day_folder_name = f'{i}일'
     this_month_day_folder_path = os.path.join(this_month_folder_path, this_month_day_folder_name)
     os.makedirs(this_month_day_folder_path, exist_ok=True)
     
     # img_url 리스트에 있는 이미지를 다운로드하여 이번달 - i 폴더에 저장
-    for j in range(len(img_url)):
+    for j in range(15):
         # 파일 이름을 cat_{폴더번호}_{이미지번호}.jpg 로 설정
-        file_name = f'cat_{i}_{j}.jpg'
+        file_name = f'cat_{i}일_{j}.jpg'
         file_path = os.path.join(this_month_day_folder_path, file_name)
-        urllib.request.urlretrieve(img_url[j], file_path)
+        urllib.request.urlretrieve(img_url[j+15*i], file_path)
         time.sleep(0.5)
 
 
-
+#%%

@@ -79,8 +79,10 @@ pyperclip.copy(text)
 pyautogui.hotkey('ctrl', 'v')  # Ctrl + V 키 입력
 time.sleep(input_wait_time)
 #except단어 클릭
+#%%
 pyautogui.click(x=347, y=628)
 time.sleep(input_wait_time)
+
 ##prompt_remove 파일 불러와서 붙여넣기
 with open('./prompt/dog_remove_prompt.txt', 'r') as f:
     text = f.read()
@@ -132,38 +134,72 @@ time.sleep(input_wait_time)
 pyautogui.click(x=1850, y=786)
 time.sleep(input_wait_time)
 
-#%% 사진 20개 만들기~
-#generate 클릭.
-for i in range(5):
+#################################################### 생산반복################################################
+#%%
+#%%
+#사진 480개 생산
+for p in range(120):
     pyautogui.click(x=200, y=1000)
     time.sleep(im_wait_time*2)
     pyautogui.press('esc')
     time.sleep(input_wait_time)
-
 #%%
-
-images = driver.find_elements(
-    by=By.CSS_SELECTOR, value='img.rounded-md.object-contain')
-img_url = []
-time.sleep(0.5)
-driver.implicitly_wait(im_wait_time)
-# img_url = images.__getattribute__('src')
-
-for image in images:
-    url = image.get_attribute('src')
-    img_url.append(url)
-    
-time.sleep(0.5)
-driver.implicitly_wait(im_wait_time)
+####dog가 현재 돌아가는 하루용 프로그램이고 이거 수정해서 한번에 한달분량 사진을 쭉 뽑아놓을 수 있어.
 folder_path = 'dog_image'
 
-for i in range(len(img_url)):
-    file_path = os.path.join(folder_path, f'dog_{i}.jpg')  # cat_image 폴더 안에 파일 경로 지정
-    urllib.request.urlretrieve(img_url[i], file_path)
+# 이번달 폴더의 경로 가져오기
+now = time.localtime()
+this_month_folder_name = ''
+this_month_folder_path = './dog_image'
+img_url=[]
+#%%
+########################### 하고나서지워버려################3
+################이부분 코드 여러번하면 뒤에 계속 추가되어버린다. 한번에 다 저장해버려야해
+# images = driver.find_elements(
+#     by=By.CSS_SELECTOR, value='a > img')
+# #%%
+# time.sleep(0.5)
+# driver.implicitly_wait(im_wait_time)
+
+# image_urls = []
+# for image in images:
+#     # 자식 요소들을 탐색하여 이미지 URL 추출 (예시로 <img> 태그를 가정)
+#     image_url = image.get_attribute('src')
+#     image_urls.append(image_url)
+#%%
+##################################################################
+
+# 이번달 - 1 폴더부터 이번달 - 31 폴더까지 생성하고 이미지 다운로드
+for i in range(1, 32):
+    
+    #사진 20개 만들기~
+    # generate 클릭.
+    images = driver.find_elements(
+        by=By.CSS_SELECTOR, value='img.rounded-md.object-contain')
+    img_url = []
     time.sleep(0.5)
+    driver.implicitly_wait(im_wait_time)
+    img_url = images.__getattribute__('src')
+
+    for image in images:
+        url = image.get_attribute('src')
+        img_url.append(url)
+        
+    time.sleep(0.5)
+    driver.implicitly_wait(im_wait_time)
+    
+    # 이번달 - i 폴더 생성
+    this_month_day_folder_name = f'{i}일'
+    this_month_day_folder_path = os.path.join(this_month_folder_path, this_month_day_folder_name)
+    os.makedirs(this_month_day_folder_path, exist_ok=True)
+    
+    # img_url 리스트에 있는 이미지를 다운로드하여 이번달 - i 폴더에 저장
+    for j in range(15):
+        # 파일 이름을 cat_{폴더번호}_{이미지번호}.jpg 로 설정
+        file_name = f'dog_{i}일_{j}.jpg'
+        file_path = os.path.join(this_month_day_folder_path, file_name)
+        urllib.request.urlretrieve(img_url[j+15*i], file_path) #img_url[]로 바꿔줘 
+        time.sleep(0.5)
+
 
 #%%
-
-
-
-
